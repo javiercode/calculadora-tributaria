@@ -7,92 +7,89 @@ class HelpScreen extends StatefulWidget {
 }
 
 class _HelpScreenState extends State<HelpScreen> {
+  final List<List<String>> dataList = [
+    <String>['Rose', 'SunFlower'],
+    <String>['SUV', 'CityCar', 'Jeep'],
+  ];
+  bool showCancel = false;
+  String inputText = "";
+  final _rate = 1.12;
+  final _euroController = TextEditingController();
+  final _usdController = TextEditingController();
+  final _euroFocusNode = FocusNode();
+  final _usdFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
+    _euroController.addListener(this.onEuroChange);
+    _usdController.addListener(this.onUSDChange);
+  }
+
+  onEuroChange() {
+    if (_euroFocusNode.hasFocus) {
+      final euro = double.tryParse(_euroController.text);
+
+      if (euro != null) {
+        final usd = euro * _rate;
+        print(usd);
+        _usdController.value = TextEditingValue(text: usd.toStringAsFixed(2));
+      }
+    }
+  }
+
+  onUSDChange() {
+    if (_usdFocusNode.hasFocus) {
+      final usd = double.tryParse(_usdController.text);
+
+      if (usd != null) {
+        final euro = usd / _rate;
+        _euroController.value = TextEditingValue(text: euro.toStringAsFixed(2));
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppTheme.nearlyWhite,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          backgroundColor: AppTheme.nearlyWhite,
-          body: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top,
-                    left: 16,
-                    right: 16),
-                child: Image.asset('assets/images/helpImage.png'),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'How can we help you?',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 16),
-                child: const Text(
-                  'It looks like you are experiencing problems\nwith our sign up process. We are here to\nhelp so please get in touch with us',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Container(
-                      width: 140,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4.0)),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: Colors.grey.withOpacity(0.6),
-                              offset: const Offset(4, 4),
-                              blurRadius: 8.0),
-                        ],
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {},
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                'Chat with Us',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Test'),
         ),
-      ),
-    );
+        body: Container(
+          padding: EdgeInsets.all(20),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Rate: €1 = ${this._rate}',
+                    style: Theme.of(context).textTheme.title),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _euroController,
+                  focusNode: _euroFocusNode,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: 'EUR', border: OutlineInputBorder()),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                    controller: _usdController,
+                    focusNode: _usdFocusNode,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: 'USD', border: OutlineInputBorder()))
+              ],
+            ),
+          ),
+        ));
+  }
+
+  @override
+  void dispose() {
+    _usdFocusNode.dispose();
+    _euroFocusNode.dispose();
+    _usdController.dispose();
+    _euroController.dispose();
+    super.dispose();
   }
 }

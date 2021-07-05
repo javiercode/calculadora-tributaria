@@ -31,7 +31,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
         index: DrawerIndex.Help,
         labelName: 'Help',
         isAssetsImage: true,
-        imageName: 'assets/images/supportIcon.png',
+        icon: Icon(Icons.live_help),
+        // imageName: 'assets/images/supportIcon.png',
       ),
       DrawerList(
         index: DrawerIndex.FeedBack,
