@@ -1,4 +1,5 @@
 import 'package:calculadora_tributaria/app_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -24,36 +25,34 @@ class _HomeDrawerState extends State<HomeDrawer> {
     drawerList = <DrawerList>[
       DrawerList(
         index: DrawerIndex.HOME,
-        labelName: 'Home',
+        labelName: 'Recibo',
         icon: Icon(Icons.home),
       ),
       DrawerList(
         index: DrawerIndex.Help,
-        labelName: 'Help',
-        isAssetsImage: true,
-        icon: Icon(Icons.live_help),
-        // imageName: 'assets/images/supportIcon.png',
+        labelName: 'Cambio',
+        icon: Icon(Icons.money_off_csred),
       ),
-      DrawerList(
-        index: DrawerIndex.FeedBack,
-        labelName: 'FeedBack',
-        icon: Icon(Icons.help),
-      ),
-      DrawerList(
-        index: DrawerIndex.Invite,
-        labelName: 'Invite Friend',
-        icon: Icon(Icons.group),
-      ),
-      DrawerList(
-        index: DrawerIndex.Share,
-        labelName: 'Rate the app',
-        icon: Icon(Icons.share),
-      ),
-      DrawerList(
-        index: DrawerIndex.About,
-        labelName: 'About Us',
-        icon: Icon(Icons.info),
-      ),
+      // DrawerList(
+      //   index: DrawerIndex.FeedBack,
+      //   labelName: 'FeedBack',
+      //   icon: Icon(Icons.help),
+      // ),
+      // DrawerList(
+      //   index: DrawerIndex.Invite,
+      //   labelName: 'Invite Friend',
+      //   icon: Icon(Icons.group),
+      // ),
+      // DrawerList(
+      //   index: DrawerIndex.Share,
+      //   labelName: 'Rate the app',
+      //   icon: Icon(Icons.share),
+      // ),
+      // DrawerList(
+      //   index: DrawerIndex.About,
+      //   labelName: 'About Us',
+      //   icon: Icon(Icons.info),
+      // ),
     ];
   }
 
@@ -95,7 +94,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                             ),
                             child: ClipRRect(
                               borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                              child: Image.asset('assets/images/userImage.png'),
+                              // child: Image.asset('assets/images/userImage.png'),
+                              // child: Icon(Icons.supervised_user_circle),
+                              child: Image(image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),),
                             ),
                           ),
                         ),
@@ -105,7 +106,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4),
                     child: Text(
-                      'Chris Hemsworth',
+                      'Usuario',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.grey,

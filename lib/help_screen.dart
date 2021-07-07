@@ -13,7 +13,7 @@ class _HelpScreenState extends State<HelpScreen> {
   ];
   bool showCancel = false;
   String inputText = "";
-  final _rate = 1.12;
+  final _rate = 6.96;
   final _euroController = TextEditingController();
   final _usdController = TextEditingController();
   final _euroFocusNode = FocusNode();
@@ -53,7 +53,7 @@ class _HelpScreenState extends State<HelpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Test'),
+          title: Text('Cambio de Dolar'),
         ),
         body: Container(
           padding: EdgeInsets.all(20),
@@ -61,7 +61,7 @@ class _HelpScreenState extends State<HelpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('Rate: €1 = ${this._rate}',
+                Text('Cambio: 1 Bs = ${this._rate}',
                     style: Theme.of(context).textTheme.title),
                 SizedBox(height: 20),
                 TextField(
@@ -69,7 +69,7 @@ class _HelpScreenState extends State<HelpScreen> {
                   focusNode: _euroFocusNode,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      labelText: 'EUR', border: OutlineInputBorder()),
+                      labelText: 'BS', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 20),
                 TextField(
