@@ -33,11 +33,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
         labelName: 'Cambio',
         icon: Icon(Icons.money_off_csred),
       ),
-      // DrawerList(
-      //   index: DrawerIndex.FeedBack,
-      //   labelName: 'FeedBack',
-      //   icon: Icon(Icons.help),
-      // ),
+      DrawerList(
+        index: DrawerIndex.FeedBack,
+        labelName: 'FeedBack',
+        icon: Icon(Icons.help),
+      ),
       // DrawerList(
       //   index: DrawerIndex.Invite,
       //   labelName: 'Invite Friend',
