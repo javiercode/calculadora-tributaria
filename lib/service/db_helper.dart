@@ -5,80 +5,104 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DBHelper {
-  //static Database? _db;
-  /*Future<Database> get db async {
-    if (_db != null) {
-      return _db;
-    }
-    _db = await initDatabase();
-    return _db;
-  }*/
+  static final DBHelper instance = DBHelper._init();
 
+  DBHelper._init();
+  static Database? _database;
 
-
-  static Database? _db;
-  Future<Database> get db async =>
-      _db ??= await initDatabase();
-
-  /*Future<Database> get database async {
-
-    if (_db == null) {
-      _db = await _initiateDatabase();
-    }
-    return _db;
-  }*/
-
-  initDatabase() async {
-    io.Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentDirectory.path, 'student.db');
-    var db = await openDatabase(path, version: 1, onCreate: _onCreate);
-    return db;
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDB('recibo.db');
+    return _database!;
   }
 
-  _onCreate(Database db, int version) async {
-    await db
-        .execute('CREATE TABLE student (id INTEGER PRIMARY KEY, name TEXT)');
+  Future<Database> _initDB(String filePath) async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, filePath);
+    return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
-  Future<Recibo> add(Recibo student) async {
-    var dbClient = await db;
-    student.id = await dbClient.insert('student', student.toMap());
-    return student;
+  Future _createDB(Database db, int version) async {
+    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    final textType = 'TEXT NOT NULL';
+    final boolType = 'BOOLEAN NOT NULL';
+    final integerType = 'INTEGER NOT NULL';
+
+    await db.execute('''
+    CREATE TABLE $tableRecibos (
+      ${ReciboFields.id} $idType,
+      ${ReciboFields.isImportant} $boolType,
+      ${ReciboFields.number} $integerType,
+      ${ReciboFields.title} $textType,
+      ${ReciboFields.description} $textType,
+      ${ReciboFields.time} $textType
+      )
+    ''');
   }
 
-  Future<List<Recibo>> getStudents() async {
-    var dbClient = await db;
-    List<Map> maps = await dbClient.query('student', columns: ['id', 'name']);
-    List<Recibo> students = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        students.add(Recibo.fromMap(maps[i]));
-      }
+  Future<Recibo> create(Recibo note) async {
+    final db = await instance.database;
+    // final json = note.toJson();
+    // final columns =
+    //     '${NoteFields.title}, ${NoteFields.description}, ${NoteFields.time}';
+    // final values =
+    //     '${json[NoteFields.title]}, ${json[NoteFields.description]}, ${json[NoteFields.time]}';
+    // final id = await db
+    //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
+
+    final id = await db.insert(tableRecibos, note.toJson());
+    return note.copy(id: id);
+  }
+
+  Future<Recibo> readNote(int id) async {
+    final db = await instance.database;
+
+    final maps = await db.query(
+      tableRecibos,
+      columns: ReciboFields.values,
+      where: '${ReciboFields.id} = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Recibo.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
     }
-    return students;
+  }
+
+  Future<List<Recibo>> readAllNotes() async {
+    final db = await instance.database;
+
+    final orderBy = '${ReciboFields.time} ASC';
+    // final result =
+    //     await db.rawQuery('SELECT * FROM $tableNotes ORDER BY $orderBy');
+
+    final result = await db.query(tableRecibos, orderBy: orderBy);
+    return result.map((json) => Recibo.fromJson(json)).toList();
+  }
+
+  Future<int> update(Recibo note) async {
+    final db = await instance.database;
+    return db.update(
+      tableRecibos,
+      note.toJson(),
+      where: '${ReciboFields.id} = ?',
+      whereArgs: [note.id],
+    );
   }
 
   Future<int> delete(int id) async {
-    var dbClient = await db;
-    return await dbClient.delete(
-      'student',
-      where: 'id = ?',
+    final db = await instance.database;
+    return await db.delete(
+      tableRecibos,
+      where: '${ReciboFields.id} = ?',
       whereArgs: [id],
     );
   }
 
-  Future<int> update(Recibo student) async {
-    var dbClient = await db;
-    return await dbClient.update(
-      'student',
-      student.toMap(),
-      where: 'id = ?',
-      whereArgs: [student.id],
-    );
-  }
-
   Future close() async {
-    var dbClient = await db;
-    dbClient.close();
+    final db = await instance.database;
+    db.close();
   }
 }

@@ -1,20 +1,68 @@
+final String tableRecibos = 'recibos';
+
+class ReciboFields {
+  static final List<String> values = [
+    /// Add all fields
+    id, isImportant, number, title, description, time
+  ];
+
+  static final String id = '_id';
+  static final String isImportant = 'isImportant';
+  static final String number = 'number';
+  static final String title = 'title';
+  static final String description = 'description';
+  static final String time = 'time';
+}
+
 class Recibo {
-  int id;
-  String name;
-  Recibo(this.id, this.name);
+  final int? id;
+  final bool isImportant;
+  final int number;
+  final String title;
+  final String description;
+  final DateTime createdTime;
 
-  Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      'id': id,
-      'name': name,
-    };
-    return map;
-  }
+  const Recibo({
+    this.id,
+    required this.isImportant,
+    required this.number,
+    required this.title,
+    required this.description,
+    required this.createdTime,
+  });
 
-  /*Recibo.fromMap(Map<String, dynamic> map) {
-    id = map['id'];
-    name = map['name'];
-  }*/
+  Recibo copy({
+    int? id,
+    bool? isImportant,
+    int? number,
+    String? title,
+    String? description,
+    DateTime? createdTime,
+  }) =>
+      Recibo(
+        id: id ?? this.id,
+        isImportant: isImportant ?? this.isImportant,
+        number: number ?? this.number,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        createdTime: createdTime ?? this.createdTime,
+      );
 
-  Map<String, Recibo> personsMap = fromMap({"person1": {"id": 1, "name": "John Doe"}}, [() => Map<String, Recibo>(), [String, Recibo]]);
+  static Recibo fromJson(Map<String, Object?> json) => Recibo(
+    id: json[ReciboFields.id] as int?,
+    isImportant: json[ReciboFields.isImportant] == 1,
+    number: json[ReciboFields.number] as int,
+    title: json[ReciboFields.title] as String,
+    description: json[ReciboFields.description] as String,
+    createdTime: DateTime.parse(json[ReciboFields.time] as String),
+  );
+
+  Map<String, Object?> toJson() => {
+    ReciboFields.id: id,
+    ReciboFields.title: title,
+    ReciboFields.isImportant: isImportant ? 1 : 0,
+    ReciboFields.number: number,
+    ReciboFields.description: description,
+    ReciboFields.time: createdTime.toIso8601String(),
+  };
 }
